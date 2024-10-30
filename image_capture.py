@@ -1,15 +1,18 @@
 import tkinter as tk
 from tkinter import filedialog, messagebox
-from PIL import Image, ImageDraw, ImageFont
-import picamera2 as picamera
+from PIL import Image, ImageDraw, ImageFont, ImageTk
+from picamera2 import Picamera2, Preview
 import os
 from io import BytesIO
-from PIL import ImageTk
 
 class CameraApp:
     def __init__(self, root):
         self.root = root
         self.root.title("Raspberry Pi Camera App")
+        
+        # Initialize Picamera2
+        self.picam2 = Picamera2()
+        self.picam2.start_preview(Preview.QTGL)
         
         # Input fields for label and destination
         self.label_entry = tk.Entry(root, width=30)
@@ -38,36 +41,28 @@ class CameraApp:
         if not dest:
             messagebox.showerror("Error", "Please enter a save location.")
             return
+        
+        # Capture image
+        image = self.picam2.capture_array()
+        pil_image = Image.fromarray(image)
+        
+        # Add label to image
+        draw = ImageDraw.Draw(pil_image)
+        font = ImageFont.load_default()
+        draw.text((10, 10), label, font=font, fill="white")
+        
+        # Save image
+        if not os.path.exists(dest):
+            os.makedirs(dest)
+        file_path = os.path.join(dest, f"{label}.jpg")
+        pil_image.save(file_path)
+        
+        # Update preview
+        img = ImageTk.PhotoImage(pil_image)
+        self.preview_label.config(image=img)
+        self.preview_label.image = img
 
-        # Take picture using picamera
-        with picamera.PiCamera() as camera:
-            stream = BytesIO()
-            camera.capture(stream, format='jpeg')
-            stream.seek(0)
-            image = Image.open(stream)
-
-            # Add label to image
-            draw = ImageDraw.Draw(image)
-            font = ImageFont.load_default()
-            text_position = (image.width - 100, image.height - 30)  # Bottom-right corner
-            draw.text(text_position, label, font=font, fill="white")
-            
-            # Save the image
-            filename = f"{label}.jpg"
-            save_path = os.path.join(dest, filename)
-            image.save(save_path)
-            
-            # Show preview in GUI
-            self.show_preview(image)
-
-    def show_preview(self, image):
-        # Convert image to Tkinter-compatible format
-        image.thumbnail((400, 300))
-        img_tk = ImageTk.PhotoImage(image)
-        self.preview_label.config(image=img_tk)
-        self.preview_label.image = img_tk
-
-# Set up GUI
-root = tk.Tk()
-app = CameraApp(root)
-root.mainloop()
+if __name__ == "__main__":
+    root = tk.Tk()
+    app = CameraApp(root)
+    root.mainloop()
