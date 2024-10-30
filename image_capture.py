@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import filedialog, messagebox
 from PIL import Image, ImageDraw, ImageFont
-import picamera
+import picamera2 as picamera
 import os
 from io import BytesIO
 from PIL import ImageTk
