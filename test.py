@@ -1,44 +1,52 @@
-import sys
-from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QPushButton, QLineEdit, QFileDialog
-from PyQt5.QtGui import QPixmap, QImage
-import picamera2
+import tkinter as tk
+from tkinter import filedialog
+from picamera2 import Picamera2
+import numpy as np
+from PIL import Image, ImageDraw, ImageFont
 import time
+import datetime
 
-class ImageCaptureApp(QWidget):
-    def __init__(self):
-        super().__init__()
-        self.initUI()
+class ImageCaptureApp:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("Image Capture and Labeling")
 
-    def initUI(self):
-        self.setWindowTitle('Image Capture App')
-        self.setGeometry(300, 300, 400, 300)
+        # ... (Rest of the GUI setup remains the same)
 
-        # Camera setup
-        self.camera = picamera2.Picamera2()
-        self.config = self.camera.create_preview_configuration()
-        self.camera.configure(self.config)
-        self.camera.start()
+        self.camera = Picamera2()
+        config = self.camera.configure(picamera2.PreviewConfig())
+        self.camera.start_preview(config)
 
-        # GUI elements
-        self.label = QLabel(self)
-        self.label.resize(320, 240)
-        self.label.move(20, 20)
+    def capture_image(self):
+        # ... (Label and destination input validation remains the same)
 
-        self.label_input = QLineEdit(self)
-        self.label_input.move(20, 260)
-        self.label_input.resize(200, 20)
+        try:
+            # Capture image
+            self.camera.capture_image("temp.jpg")
 
-        self.save_button = QPushButton('Click', self)
-        self.save_button.move(230, 260)
-        self.save_button.clicked.connect(self.capture_and_save)
+            # Load image and add label
+            image = Image.open("temp.jpg")
+            draw = ImageDraw.Draw(image)
+            font = ImageFont.truetype("/usr/share/fonts/truetype/freefont/FreeSansBold.ttf", 24)
+            text_width, text_height = draw.textsize(label, font=font)
+            image_width, image_height = image.size
+            draw.text((image_width - text_width - 10, image_height - text_height - 10), label, font=font, fill='white')
 
-        self.show()
+            # Display preview
+            photo = ImageTk.PhotoImage(image)
+            self.preview_label.config(image=photo)
+            self.preview_label.image = photo
 
-    def capture_and_save(self):
-        # Capture and save logic here
-        pass
+            # Save image
+            timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+            filename = f"{label}_{timestamp}.jpg"
+            image.save(f"{dest}/{filename}")
+            tk.messagebox.showinfo("Success", f"Image saved as {filename}")
 
-if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    ex = ImageCaptureApp()
-    sys.exit(app.exec_())
+        except Exception as e:
+            tk.messagebox.showerror("Error", str(e))
+
+if __name__ == "__main__":
+    root = tk.Tk()
+    app = ImageCaptureApp(root)
+    root.mainloop()
