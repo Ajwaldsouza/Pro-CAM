@@ -4,6 +4,7 @@ from PIL import Image, ImageDraw, ImageFont, ImageTk
 from picamera2 import Picamera2, Preview
 import os
 from io import BytesIO
+import time
 
 class CameraApp:
     def __init__(self, root):
@@ -13,6 +14,7 @@ class CameraApp:
         # Initialize Picamera2
         self.picam2 = Picamera2()
         self.picam2.start_preview(Preview.QTGL)
+        self.picam2.start()
         
         # Input fields for label and destination
         self.label_entry = tk.Entry(root, width=30)
@@ -35,32 +37,32 @@ class CameraApp:
         label = self.label_entry.get()
         dest = self.dest_entry.get()
         
-        if not label:
-            messagebox.showerror("Error", "Please enter a label.")
-            return
-        if not dest:
-            messagebox.showerror("Error", "Please enter a save location.")
+        if not label or not dest:
+            messagebox.showerror("Error", "Both label and save location must be filled.")
             return
         
-        # Capture image
+        # Capture the image
         image = self.picam2.capture_array()
+        
+        # Convert to PIL Image
         pil_image = Image.fromarray(image)
         
-        # Add label to image
+        # Add label to the image
         draw = ImageDraw.Draw(pil_image)
         font = ImageFont.load_default()
         draw.text((10, 10), label, font=font, fill="white")
         
-        # Save image
+        # Save the image
         if not os.path.exists(dest):
             os.makedirs(dest)
         file_path = os.path.join(dest, f"{label}.jpg")
         pil_image.save(file_path)
         
-        # Update preview
-        img = ImageTk.PhotoImage(pil_image)
-        self.preview_label.config(image=img)
-        self.preview_label.image = img
+        # Stop the preview
+        self.picam2.stop_preview()
+        
+        # Show success message
+        messagebox.showinfo("Success", f"Image saved to {file_path}")
 
 if __name__ == "__main__":
     root = tk.Tk()
