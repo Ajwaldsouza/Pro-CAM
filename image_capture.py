@@ -49,7 +49,10 @@ class CameraApp:
         
         # Add label to the image
         draw = ImageDraw.Draw(pil_image)
-        font = ImageFont.load_default()
+        # Use a TrueType font with a higher resolution
+        font_path = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"  # Update this path to a valid TTF font on your system
+        font_size = 36  # Adjust the font size as needed
+        font = ImageFont.truetype(font_path, font_size)
         draw.text((10, 10), label, font=font, fill="white")
         
         # Convert image to RGB mode
