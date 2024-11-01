@@ -51,7 +51,7 @@ class CameraApp:
         draw = ImageDraw.Draw(pil_image)
         # Use a TrueType font with a higher resolution
         font_path = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"  # Update this path to a valid TTF font on your system
-        font_size = 36  # Adjust the font size as needed
+        font_size = 24  # Adjust the font size as needed
         font = ImageFont.truetype(font_path, font_size)
         draw.text((10, 10), label, font=font, fill="white")
         
