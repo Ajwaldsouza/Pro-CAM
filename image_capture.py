@@ -64,8 +64,9 @@ class CameraApp:
         file_path = os.path.join(dest, f"{label}.jpg")
         pil_image.save(file_path)
         
-        # Stop the preview
+        # Restart the preview for the next capture
         self.picam2.stop_preview()
+        self.picam2.start_preview(Preview.QTGL)
         
         # Show success message
         messagebox.showinfo("Success", f"Image saved to {file_path}")
