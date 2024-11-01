@@ -33,7 +33,7 @@ This is a simple Raspberry Pi Camera application built using Python and Tkinter.
 
 1. Run the application:
     ```sh
-    python image_capture.py
+    python3 image_capture.py
     ```
 
 2. Enter a label for the image in the "Enter Label" field.
