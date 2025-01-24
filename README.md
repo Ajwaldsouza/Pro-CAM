@@ -20,13 +20,16 @@ This is a simple Raspberry Pi Camera application built using Python and Tkinter.
 
 1. Clone the repository:
     ```sh
-    git clone https://github.com/yourusername/raspberry-pi-camera-app.git
-    cd raspberry-pi-camera-app
+    git clone https://github.com/Ajwaldsouza/image_capture.git
     ```
 
 2. Install the required Python packages:
     ```sh
-    pip install tkinter pillow picamera2
+  
+    sudo apt install python3-tk 
+    sudo apt install python3-pillow
+    sudo apt install python3-picamera2
+    sudo apt-get install python3-pil.imagetk # add all the packages properly here
     ```
 
 ## Usage
@@ -57,4 +60,3 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 - [Pillow](https://python-pillow.org/) for image processing.
 - [Picamera2](https://github.com/raspberrypi/picamera2) for interfacing with the Raspberry Pi camera.
 
-Feel free to contribute to this project by submitting issues or pull requests.
