@@ -42,7 +42,7 @@ class CameraApp:
             return
         
         # Capture the image
-        image = self.picam2.capture_array()
+        image = self.picam2.capture_array("rgb")
         
         # Convert to PIL Image
         pil_image = Image.fromarray(image)
@@ -56,7 +56,7 @@ class CameraApp:
         draw.text((10, 10), label, font=font, fill="white")
         
         # Convert image to RGB mode
-        pil_image = pil_image.convert()
+        pil_image = pil_image.convert("RGB")
         
         # Save the image
         if not os.path.exists(dest):
