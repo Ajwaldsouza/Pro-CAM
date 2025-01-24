@@ -56,7 +56,7 @@ class CameraApp:
         draw.text((10, 10), label, font=font, fill="white")
         
         # Convert image to RGB mode
-        pil_image = pil_image.convert("RGBA")
+        pil_image = pil_image.convert("NONE")
         
         # Save the image
         if not os.path.exists(dest):
