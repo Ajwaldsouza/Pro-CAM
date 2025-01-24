@@ -45,7 +45,7 @@ class CameraApp:
         image = self.picam2.capture_array()
 
         # Convert BGR to RGB because PIL expects RGB
-    image_rgb = image[:, :, ::-1]  # This reverses the color channel order from BGR to RGB
+        image_rgb = image[:, :, ::-1]  # This reverses the color channel order from BGR to RGB
         
         # Convert to PIL Image
         pil_image = Image.fromarray(image)
