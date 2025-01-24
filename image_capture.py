@@ -42,7 +42,7 @@ class CameraApp:
             return
         
         # Capture the image
-        image = self.picam2.capture_array("rgb")
+        image = self.picam2.capture_array()
         
         # Convert to PIL Image
         pil_image = Image.fromarray(image)
