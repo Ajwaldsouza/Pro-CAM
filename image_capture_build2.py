@@ -82,7 +82,7 @@ class CameraApp:
         # Add label text at bottom-right with proportional font size
         draw = ImageDraw.Draw(pil_image)
         try:
-            font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", pil_image.height // 50)
+            font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", pil_image.height // 25)
         except IOError:
             font = ImageFont.load_default()
             messagebox.showwarning("Warning", "Font not found, using default font.")
