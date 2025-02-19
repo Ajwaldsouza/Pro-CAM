@@ -17,30 +17,25 @@ class CameraApp:
         self.picam2.start()
 
         # GUI elements
-        # Label text entry
-        tk.Label(root, text="Enter label text:").grid(row=0, column=0, padx=10, pady=5)
+        # Label text entry (used for both image label and file name)
+        tk.Label(root, text="Enter label text (will be used as file name):").grid(row=0, column=0, padx=10, pady=5)
         self.label_entry = tk.Entry(root, width=30)
         self.label_entry.grid(row=0, column=1, padx=10, pady=5)
 
-        # File name entry
-        tk.Label(root, text="Enter file name (with extension):").grid(row=1, column=0, padx=10, pady=5)
-        self.filename_entry = tk.Entry(root, width=30)
-        self.filename_entry.grid(row=1, column=1, padx=10, pady=5)
-
         # Save directory with browse button
-        tk.Label(root, text="Save directory:").grid(row=2, column=0, padx=10, pady=5)
+        tk.Label(root, text="Save directory:").grid(row=1, column=0, padx=10, pady=5)
         self.save_dir = os.getcwd()
         self.dest_label = tk.Label(root, text=self.save_dir, width=30, anchor="w")
-        self.dest_label.grid(row=2, column=1, padx=10, pady=5)
-        tk.Button(root, text="Browse", command=self.browse_dest).grid(row=2, column=2, padx=10, pady=5)
+        self.dest_label.grid(row=1, column=1, padx=10, pady=5)
+        tk.Button(root, text="Browse", command=self.browse_dest).grid(row=1, column=2, padx=10, pady=5)
 
         # Preview label
         self.preview_label = tk.Label(root, width=640, height=480, bg="black")
-        self.preview_label.grid(row=3, column=0, columnspan=3, padx=10, pady=10)
+        self.preview_label.grid(row=2, column=0, columnspan=3, padx=10, pady=10)
 
         # Capture button
         self.capture_button = tk.Button(root, text="Capture", command=self.capture_image)
-        self.capture_button.grid(row=4, column=0, columnspan=3, pady=10)
+        self.capture_button.grid(row=3, column=0, columnspan=3, pady=10)
 
         # Handle window close
         self.root.protocol("WM_DELETE_WINDOW", self.on_closing)
@@ -66,13 +61,12 @@ class CameraApp:
         self.root.after(100, self.update_preview)  # Update every 100ms (10 FPS)
 
     def capture_image(self):
-        """Capture an image, add label text, and save it."""
+        """Capture an image, add label text, and save it as JPEG with the label text as the file name."""
         label_text = self.label_entry.get().strip()
-        filename = self.filename_entry.get().strip()
 
-        # Validate inputs
-        if not label_text or not filename:
-            messagebox.showerror("Error", "Please enter both label text and file name.")
+        # Validate input
+        if not label_text:
+            messagebox.showerror("Error", "Please enter a label text.")
             return
 
         # Capture high-resolution image
@@ -101,10 +95,11 @@ class CameraApp:
         y = pil_image.height - text_height - 10
         draw.text((x, y), label_text, font=font, fill="white")
 
-        # Save the image
-        file_path = os.path.join(self.save_dir, filename)
+        # Save the image as JPEG with the label text as the file name
+        file_name = f"{label_text}.jpg"
+        file_path = os.path.join(self.save_dir, file_name)
         try:
-            pil_image.save(file_path)
+            pil_image.save(file_path, format="JPEG")
             messagebox.showinfo("Success", f"Image saved to {file_path}")
         except Exception as e:
             messagebox.showerror("Error", f"Failed to save image: {e}")
