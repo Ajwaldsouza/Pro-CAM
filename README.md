@@ -16,7 +16,8 @@ This program was developed to sample top-down canopy images of plants.
 
 -   **User-friendly GUI**: Simple interface for easy operation.
 
-![Screenshot of the app window](images/Screenshot 2025-02-28 at 10.22.25 am.png){width="479"}
+
+<img width="803" alt="Screenshot 2025-02-28 at 10 22 25 am" src="https://github.com/user-attachments/assets/bcbd9bb6-e56c-4bc3-82ec-68689095f3aa" />
 
 ------------------------------------------------------------------------
 
