@@ -1,9 +1,3 @@
----
-editor_options: 
-  markdown: 
-    wrap: 72
----
-
 # Raspberry Pi Sampling Camera App
 
 This program allows users to capture images using a Raspberry Pi camera,
