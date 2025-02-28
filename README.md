@@ -6,6 +6,8 @@ also used as the file name, and the user can select the directory where
 the image is saved. The app provides a live preview of the camera feed,
 making it easy to frame and capture high-resolution photos.
 
+This program was developed to sample top-down canopy images of plants.
+
 ## **Features**
 
 -   **Live preview**: See the camera feed in real-time before capturing.
