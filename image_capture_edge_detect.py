@@ -81,8 +81,17 @@ class CameraApp:
         bbox = draw.textbbox((0, 0), label_text, font=font)
         text_width = bbox[2] - bbox[0]
         text_height = bbox[3] - bbox[1]
-        x = pil_image.width - text_width - 10
-        y = pil_image.height - text_height - 10
+
+        # Change text position from bottom-right to top-left with better margin
+        x = 20  # Left margin
+        y = 20  # Top margin
+
+        # Optional: Draw a semi-transparent background for better text visibility
+        text_padding = 10
+        draw.rectangle(
+            [(x-text_padding, y-text_padding), (x+text_width+text_padding, y+text_height+text_padding)],
+            fill=(0, 0, 0, 128)  # Semi-transparent black background
+        )
         draw.text((x, y), label_text, font=font, fill="white")
         
         # Save the labeled image
