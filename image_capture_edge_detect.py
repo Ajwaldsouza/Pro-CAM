@@ -71,15 +71,31 @@ class CameraApp:
             messagebox.showerror("Error", f"Failed to capture image: {e}")
             return
 
-        # Save raw image
-        raw_file_path = os.path.join(self.save_dir, f"raw_{label_text}.jpg")
+        # First create the labeled image (with sample name)
+        pil_image = Image.fromarray(image_rgb)
+        draw = ImageDraw.Draw(pil_image)
         try:
-            pil_image = Image.fromarray(image_rgb)
-            pil_image.save(raw_file_path, format="JPEG")
+            font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", pil_image.height // 25)
+        except IOError:
+            font = ImageFont.load_default()
+        bbox = draw.textbbox((0, 0), label_text, font=font)
+        text_width = bbox[2] - bbox[0]
+        text_height = bbox[3] - bbox[1]
+        x = pil_image.width - text_width - 10
+        y = pil_image.height - text_height - 10
+        draw.text((x, y), label_text, font=font, fill="white")
+        
+        # Save the labeled image
+        labeled_file_path = os.path.join(self.save_dir, f"{label_text}.jpg")
+        try:
+            pil_image.save(labeled_file_path, format="JPEG")
         except Exception as e:
-            messagebox.showerror("Error", f"Failed to save raw image: {e}")
+            messagebox.showerror("Error", f"Failed to save labeled image: {e}")
             return
 
+        # Convert the labeled PIL image back to numpy array for OpenCV processing
+        image_rgb = np.array(pil_image)
+        
         # Convert to BGR for processing
         image_bgr = cv2.cvtColor(image_rgb, cv2.COLOR_RGB2BGR)
 
@@ -102,7 +118,7 @@ class CameraApp:
         # Edge Detection: Find and draw contours
         contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         contour_img = image_bgr.copy()
-        cv2.drawContours(contour_img, contours, -1, (0, 0, 255), 3)  # Green contours
+        cv2.drawContours(contour_img, contours, -1, (0, 0, 255), 3)  # Red contours
 
         # Save edge-detected image
         edges_file_path = os.path.join(self.save_dir, f"edges_{label_text}.jpg")
@@ -125,25 +141,7 @@ class CameraApp:
             messagebox.showerror("Error", f"Failed to write to CSV: {e}")
             return
 
-        # Add label text and save labeled image (original functionality)
-        pil_image = Image.fromarray(image_rgb)
-        draw = ImageDraw.Draw(pil_image)
-        try:
-            font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", pil_image.height // 25)
-        except IOError:
-            font = ImageFont.load_default()
-        bbox = draw.textbbox((0, 0), label_text, font=font)
-        text_width = bbox[2] - bbox[0]
-        text_height = bbox[3] - bbox[1]
-        x = pil_image.width - text_width - 10
-        y = pil_image.height - text_height - 10
-        draw.text((x, y), label_text, font=font, fill="white")
-        labeled_file_path = os.path.join(self.save_dir, f"{label_text}.jpg")
-        try:
-            pil_image.save(labeled_file_path, format="JPEG")
-            messagebox.showinfo("Success", f"Image saved to {labeled_file_path}\nCanopy area: {canopy_area} pixels")
-        except Exception as e:
-            messagebox.showerror("Error", f"Failed to save labeled image: {e}")
+        messagebox.showinfo("Success", f"Images saved successfully.\nCanopy area: {canopy_area} pixels")
 
     def on_closing(self):
         """Clean up resources when the window is closed."""
