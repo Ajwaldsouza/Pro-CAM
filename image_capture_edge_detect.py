@@ -102,7 +102,7 @@ class CameraApp:
         # Edge Detection: Find and draw contours
         contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         contour_img = image_bgr.copy()
-        cv2.drawContours(contour_img, contours, -1, (0, 255, 0), 3)  # Green contours
+        cv2.drawContours(contour_img, contours, -1, (0, 0, 255), 3)  # Green contours
 
         # Save edge-detected image
         edges_file_path = os.path.join(self.save_dir, f"edges_{label_text}.jpg")
