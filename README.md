@@ -43,16 +43,16 @@ Follow the instructions on the Picamera2 GitHub repository to install and config
 
 ## Usage
 
-Clone the Repository:
-```bash
-git clone https://github.com/yourusername/raspberry-pi-camera-app.git
-cd raspberry-pi-camera-app
+1. **Clone the Repository:**
+  ```bash
+  git clone https://github.com/yourusername/raspberry-pi-camera-app.git
+  cd raspberry-pi-camera-app
 ```
-Run the Application: 
-Execute the Python script:
-```bash
-python image_capture.py
-```
+2. **Run the Application:**
+  Execute the Python script:
+  ```bash
+  python image_capture.py
+  ```
 
 3. **Using the Application:**
   - Enter a label in the provided text field (this will be used as the image file name).
