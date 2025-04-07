@@ -1,114 +1,72 @@
-# Raspberry Pi Sampling Camera App
+# Raspberry Pi Camera Canopy Area App
 
-This program allows users to capture images using a Raspberry Pi camera, add a label to the image, and save it as a JPEG file. The label text is also used as the file name, and the user can select the directory where the image is saved. The app provides a live preview of the camera feed, making it easy to frame and capture high-resolution photos.
+This is a Python application designed for the Raspberry Pi that utilizes the PiCamera2 module to capture high-resolution images and perform basic image processing to calculate the projected canopy area of the plant. The application provides a graphical user interface (GUI) to preview the camera feed, capture images, and analyze the captured image to calculate the canopy area (i.e., the number of green pixels corresponding to plants). The processed images and data are saved to a user-specified directory.
 
-This program was developed to sample top-down canopy images of plants.
+## Features
 
-## **Features**
-
--   **Live preview**: See the camera feed in real-time before capturing.
-
--   **High-resolution capture**: Images are saved at 2592x1944 resolution by default.
-
--   **Custom labeling**: Add user-defined text to the bottom-right corner of each image.
-
--   **JPEG output**: Save images in a widely compatible format.
-
--   **User-friendly GUI**: Simple interface for easy operation.
-
-
-<img width="475" alt="Screenshot 2025-02-28 at 10 22 25 am" src="https://github.com/user-attachments/assets/bcbd9bb6-e56c-4bc3-82ec-68689095f3aa" />
-
-------------------------------------------------------------------------
+- **Live Camera Preview:** Displays a real-time camera feed in the GUI.
+- **Image Capture:** Captures a high-resolution image from the Raspberry Pi camera.
+- **Labeling:** Adds a user-provided label to the captured image.
+- **Image Processing:** 
+  - Applies Gaussian blur to reduce noise.
+  - Converts the image to the HSV color space and thresholds it to detect green regions.
+  - Uses morphological operations to refine the segmentation.
+  - Detects edges by finding contours.
+- **Data Logging:** Saves the canopy area measurement to a CSV file along with the label.
+- **File Management:** Allows the user to select the destination directory for saving images and data.
 
 ## Requirements
 
-Before using this program, ensure you have the following:
+- **Hardware:**
+  - Raspberry Pi with an attached camera module compatible with PiCamera2.
+- **Software:**
+  - Python 3.x
+  - Tkinter (usually included with Python)
+  - [Picamera2](https://github.com/raspberrypi/picamera2) (for interfacing with the Raspberry Pi camera)
+  - [Pillow](https://python-pillow.org/) (for image processing)
+  - [OpenCV](https://opencv.org/) (for advanced image processing)
+  - [NumPy](https://numpy.org/) (for numerical operations)
 
--   A **Raspberry Pi** with a camera module attached and enabled.
+## Installation
 
--   **Python 3** installed on your Raspberry Pi.
+1. **Install Python Packages:**
 
--   Required Python libraries: tkinter, Pillow, and picamera2.
+   You can install the required packages using pip:
+   ```bash
+   pip install pillow opencv-python-headless numpy
+   ```
 
--   A **display** connected to the Raspberry Pi, or remote access via SSH for GUI support.
 
-------------------------------------------------------------------------
+2. **Install and Configure Picamera2:**
+Follow the instructions on the Picamera2 GitHub repository to install and configure the Picamera2 library on your Raspberry Pi.
 
-## **Installation**
-
-Follow these steps to set up the program:
-
-1.  **Clone the repository or download the source code** to your Raspberry Pi.
-
-2.  **Install the required Python libraries** using the following commands:
-
-    bash
-
-    ```         
-    pip install pillow picamera2
-    ```
-
-    **Note**: tkinter is typically included with Python on Raspberry Pi OS. If it’s not installed, run:
-
-    bash
-
-    ```         
-    sudo apt-get install python3-tk
-    ```
-
-------------------------------------------------------------------------
 
 ## Usage
 
-1.  To run and use the program:
+Clone the Repository:
+```bash
+git clone https://github.com/yourusername/raspberry-pi-camera-app.git
+cd raspberry-pi-camera-app
+```
+Run the Application: 
+Execute the Python script:
+```bash
+python image_capture.py
+```
 
-    1.  Launch the app by running the Python script:
+3. **Using the Application:**
+  - Enter a label in the provided text field (this will be used as the image file name).
+  - Optionally, click the "Browse" button to select a different directory where the images and CSV file will be saved.
+  - The live camera preview will appear in the window.
+  - Click the "Capture" button to take an image. The program will process the image, save the labeled image and edge-detected image, and log the canopy area to a CSV file.
+  - A success message will be displayed once the process is complete.
 
-        bash
+## Notes
 
-        ```         
-        python3 image_capture.py
-        ```
+The default image dimensions for capture and preview can be adjusted in the script.
+The HSV threshold values for detecting green areas might need fine-tuning based on the lighting and the specific plant characteristics.
+Ensure that the Raspberry Pi camera is properly connected and configured before running the application.
+License
 
-    2.  In the GUI:
+This project is licensed under the MIT License. See the LICENSE file for details.
 
-        -   Enter the **label text** in the text entry field (this will be used as both the label on the image and the file name).
-
-        -   Click the **"Browse"** button to select the directory where the image will be saved.
-
-        -   Click the **"Capture"** button to take a photo.
-
-    3.  The image will be saved in the selected directory as a JPEG file, named after the label text (e.g., `label_text.jpg`), with the label displayed in the bottom-right corner.
-
-------------------------------------------------------------------------
-
-## **Customization**
-
-You can tweak the program to suit your needs:
-
--   **Font**: By default, the app uses "DejaVu Sans Bold" for labels. To change this, edit the `font` variable in the `capture_image` method of the source code.
-
--   **Image Resolution**: The default resolution is 2592x1944. Adjust this by modifying the `still_config` settings in the `__init__` method.
-
-**Note**: The program overwrites files with the same name in the save directory. To avoid this, modify the code to append a timestamp or counter to the file name (e.g., `label_text_20231010.jpg`).
-
-------------------------------------------------------------------------
-
-## **Troubleshooting**
-
-Here are some common issues and their solutions:
-
--   **Camera not detected or enabled**: Verify the camera is connected and enabled via `sudo raspi-config.`
-
--   **Missing dependencies**: Ensure all required libraries are installed using `pip`.
-
--   **Permission issues when saving files**: Check that the chosen directory has write permissions (e.g., use `chmod` or select a user-writable folder).
-
--   **Font not found for labeling**: If the specified font is unavailable, the program will fall back to a default font.
-
-------------------------------------------------------------------------
-
-## License
-
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details. Feel free to use, modify, and distribute it as permitted by the license.
