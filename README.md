@@ -1,4 +1,4 @@
-# Raspberry Pi Camera Canopy Area App
+# ProCAM (Projected Canopy Area Measurement)
 
 This is a Python application designed for the Raspberry Pi that utilizes the PiCamera2 module to capture high-resolution images and perform basic image processing to calculate the projected canopy area of the plant. The application provides a graphical user interface (GUI) to preview the camera feed, capture images, and analyze the captured image to calculate the canopy area (i.e., the number of green pixels corresponding to plants). The processed images and data are saved to a user-specified directory.
 
