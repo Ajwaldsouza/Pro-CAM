@@ -6,24 +6,18 @@ import os
 import cv2
 import csv
 import numpy as np
-import time
 
 class CameraApp:
     def __init__(self, root):
         self.root = root
         self.root.title("Raspberry Pi Camera App")
 
-        # Initialize camera with error handling
-        try:
-            self.picam2 = Picamera2(camera_num=0)  # Explicitly specify camera 0
-            self.preview_config = self.picam2.create_preview_configuration(main={"size": (640, 480)})
-            self.still_config = self.picam2.create_still_configuration(main={"size": (2592, 1944)})
-            self.picam2.configure(self.preview_config)
-            self.picam2.start()
-            self.camera_available = True
-        except Exception as e:
-            messagebox.showerror("Camera Error", f"Failed to initialize camera: {e}")
-            self.camera_available = False
+        # Initialize Picamera2 with preview and still configurations
+        self.picam2 = Picamera2()
+        self.preview_config = self.picam2.create_preview_configuration(main={"size": (640, 480)})
+        self.still_config = self.picam2.create_still_configuration(main={"size": (2592, 1944)})  # Adjust for your camera
+        self.picam2.configure(self.preview_config)
+        self.picam2.start()
 
         # GUI elements
         tk.Label(root, text="Enter label text (will be used as file name):").grid(row=0, column=0, padx=10, pady=5)
@@ -36,44 +30,16 @@ class CameraApp:
         self.dest_label.grid(row=1, column=1, padx=10, pady=5)
         tk.Button(root, text="Browse", command=self.browse_dest).grid(row=1, column=2, padx=10, pady=5)
 
-        # Add camera selection if needed
-        tk.Label(root, text="Camera:").grid(row=2, column=0, padx=10, pady=5)
-        self.camera_var = tk.StringVar(value="0")
-        self.camera_combo = tk.OptionMenu(root, self.camera_var, "0", "1", "2")
-        self.camera_combo.grid(row=2, column=1, padx=10, pady=5)
-        tk.Button(root, text="Switch Camera", command=self.switch_camera).grid(row=2, column=2, padx=10, pady=5)
-
-        # Rest of the GUI
         self.preview_label = tk.Label(root, width=640, height=480, bg="black")
-        self.preview_label.grid(row=3, column=0, columnspan=3, padx=10, pady=10)
+        self.preview_label.grid(row=2, column=0, columnspan=3, padx=10, pady=10)
 
         self.capture_button = tk.Button(root, text="Capture", command=self.capture_image)
-        self.capture_button.grid(row=4, column=0, columnspan=3, pady=10)
+        self.capture_button.grid(row=3, column=0, columnspan=3, pady=10)
 
         self.root.protocol("WM_DELETE_WINDOW", self.on_closing)
 
-        if self.camera_available:
-            self.update_preview()
-    
-    def switch_camera(self):
-        """Switch to a different camera."""
-        if self.camera_available:
-            self.picam2.stop()
-            time.sleep(0.5)  # Give camera time to release
-        
-        try:
-            camera_num = int(self.camera_var.get())
-            self.picam2 = Picamera2(camera_num=camera_num)
-            self.preview_config = self.picam2.create_preview_configuration(main={"size": (640, 480)})
-            self.still_config = self.picam2.create_still_configuration(main={"size": (2592, 1944)})
-            self.picam2.configure(self.preview_config)
-            self.picam2.start()
-            self.camera_available = True
-            self.update_preview()
-        except Exception as e:
-            messagebox.showerror("Camera Error", f"Failed to initialize camera {camera_num}: {e}")
-            self.camera_available = False
-    
+        self.update_preview()
+
     def browse_dest(self):
         """Open a dialog to select the save directory."""
         dir_path = filedialog.askdirectory(initialdir=self.save_dir)
@@ -83,21 +49,13 @@ class CameraApp:
 
     def update_preview(self):
         """Update the preview label with the latest camera frame."""
-        if not self.camera_available:
-            return
-        
-        try:
-            frame = self.picam2.capture_array()
-            if frame is not None:
-                pil_frame = Image.fromarray(frame)
-                photo = ImageTk.PhotoImage(pil_frame)
-                self.preview_label.config(image=photo)
-                self.preview_label.image = photo
-            self.root.after(100, self.update_preview)
-        except Exception as e:
-            print(f"Preview error: {e}")
-            self.camera_available = False
-            self.root.after(1000, self.update_preview)  # Try again after a delay
+        frame = self.picam2.capture_array()
+        if frame is not None:
+            pil_frame = Image.fromarray(frame)
+            photo = ImageTk.PhotoImage(pil_frame)
+            self.preview_label.config(image=photo)
+            self.preview_label.image = photo
+        self.root.after(100, self.update_preview)
 
     def capture_image(self):
         """Capture an image, process it to measure canopy area, detect edges, and save results."""
